@@ -19,6 +19,7 @@ import com.example.dearapp.exceptionclasses.DuplicateEmailIdException;
 import com.example.dearapp.exceptionclasses.DuplicatePhoneException;
 import com.example.dearapp.exceptionclasses.InValidUserIdException;
 import com.example.dearapp.responsestructure.ResponseStructure;
+import com.example.dearapp.util.EmailService;
 import com.example.dearapp.util.SortByAgeDifferenceAsc;
 import com.example.dearapp.util.UserGender;
 import com.example.dearapp.util.UserRole;
@@ -27,6 +28,8 @@ import com.example.dearapp.util.UserStatus;
 @Service
 
 public class UserService {
+	@Autowired
+	private EmailService emailservice;
 	@Autowired
 	private   UserDao dao;
 
@@ -41,6 +44,8 @@ public class UserService {
 			throw  new DuplicatePhoneException("Account already exist with this phone can you please create with another mobileNumber"+" "+u.getPhone());
 		}
 	u =dao.saveUser(u);
+	//send email
+	emailservice.sendFirstEmail(u);
 		ResponseStructure<User> structure=new ResponseStructure<>();
 		structure.setStatus(HttpStatus.OK.value());
 		structure.setMessage("User Saved successfully");
